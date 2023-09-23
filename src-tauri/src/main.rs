@@ -5,7 +5,6 @@ use tracker::create_equipment;
 
 use tracker::establish_connection;
 use tracker::find_all_equipments;
-use serde::Serialize;
 use tracker::models::Equipment;
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
@@ -18,7 +17,6 @@ fn add_equipment(name: &str, km: i32) -> Equipment {
 
 #[tauri::command]
 fn get_equipments() -> Result<String, String> {
-    print!("AAAAAAAAAAAAA");
     let connection = &mut establish_connection();
     let results = find_all_equipments(connection);
     let json = serde_json::to_string(&results).unwrap();
