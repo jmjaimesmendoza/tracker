@@ -1,0 +1,6 @@
+-- Your SQL goes here
+CREATE TABLE equipments (
+  id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+  name TEXT NOT NULL,
+  km INTEGER NOT NULL
+)
