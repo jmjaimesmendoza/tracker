@@ -12,13 +12,17 @@
   },
   "dependencies": {
     "@tauri-apps/api": "^1.4.0",
-    "svelte-routing": "^2.4.0"
+    "svelte-routing": "^2.4.0",
+    "svelte-simple-modal": "^1.6.1"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^2.4.2",
     "@tauri-apps/cli": "^1.4.0",
     "@tsconfig/svelte": "^5.0.0",
     "autoprefixer": "^10.4.16",
+    "flowbite": "^1.8.1",
+    "flowbite-svelte": "^0.44.17",
+    "flowbite-svelte-icons": "^0.4.4",
     "postcss": "^8.4.30",
     "svelte": "^4.0.5",
     "svelte-check": "^3.4.6",
