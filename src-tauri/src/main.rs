@@ -9,7 +9,6 @@ use tracker::establish_connection;
 use tracker::find_all_equipments;
 use tracker::find_all_logs;
 use tracker::find_all_persons;
-use tracker::find_equipment_by_id;
 use tracker::models::Log;
 use tracker::models::{Equipment, Person};
 use tracker::update_equipment_km_by_id;
