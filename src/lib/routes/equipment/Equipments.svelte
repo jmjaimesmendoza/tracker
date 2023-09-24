@@ -1,11 +1,10 @@
 <script lang="ts">
-  import { invoke } from "@tauri-apps/api/tauri";
   import { onMount } from "svelte";
   import { createTable, Subscribe, Render } from "svelte-headless-table";
   import { addSortBy } from "svelte-headless-table/plugins";
   import Modal from 'svelte-simple-modal';
   import AEModal from "./AEModal.svelte";
-  import { equipmentStore, setEquipments } from "../stores/equipmentStore";
+  import { equipmentStore, setEquipments } from "../../stores/equipmentStore";
 
   const table = createTable(equipmentStore, {
     sort: addSortBy({ disableMultisort: true }),

@@ -20,9 +20,11 @@ CREATE TABLE logs (
   id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
   equipment_id INTEGER NOT NULL,
   person_id INTEGER NOT NULL,
-  previous_km INTEGER NOT NULL,
-  new_km INTEGER NOT NULL,
+  job TEXT NOT NULL CHECK( job IN ('Preventivo', 'Reparacion leve', 'Reparacion mayor', 'Cambio de aceite y filtros') ),
+  km INTEGER NOT NULL,
   description TEXT NOT NULL,
+
+  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
   FOREIGN KEY (equipment_id) REFERENCES equipments (id),
   FOREIGN KEY (person_id) REFERENCES persons (id)

@@ -6,7 +6,6 @@ export const equipmentStore: Writable<Array<Equipment>> = writable([]);
 
 export const addEquipment = async ( name: string, km: number) => {
   const res = await invoke("add_equipment", { name, km });
-  console.log(res);
 }
 
 export const setEquipments = async () => {

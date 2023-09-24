@@ -13,9 +13,10 @@ diesel::table! {
         id -> Integer,
         equipment_id -> Integer,
         person_id -> Integer,
-        previous_km -> Integer,
-        new_km -> Integer,
+        job -> Text,
+        km -> Integer,
         description -> Text,
+        created_at -> Text,
     }
 }
 

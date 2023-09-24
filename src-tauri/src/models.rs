@@ -16,8 +16,10 @@ pub struct Log {
     pub id: i32,
     pub equipment_id: i32,
     pub person_id: i32,
-    pub previous_km: i32,
-    pub new_km: i32
+    pub km: i32,
+    pub job: String,
+    pub description: String,
+    pub created_at: String
 }
 #[derive(Queryable, Selectable, Serialize)]
 #[diesel(table_name = crate::schema::persons)]
@@ -52,8 +54,8 @@ pub struct NewLog<'a> {
     pub equipment_id: &'a i32,
     pub person_id: &'a i32,
     pub description: &'a String,
-    pub previous_km: &'a i32,
-    pub new_km: &'a i32,
+    pub job: &'a String,
+    pub km: &'a i32,
 }
 
 #[derive(Insertable)]
