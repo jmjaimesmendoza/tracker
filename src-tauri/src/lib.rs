@@ -6,6 +6,7 @@ use self::models::{Log, NewLog};
 use self::models::{Person, NewPerson};
 use diesel::prelude::*;
 use dotenvy::dotenv;
+use models::Revision;
 use std::env;
 
 pub fn establish_connection() -> SqliteConnection {
@@ -104,4 +105,26 @@ pub fn find_all_persons(conn: &mut SqliteConnection) -> Vec<Person> {
         .expect("Error loading persons");
     return results;
 }
-//USERS
+//REVISIONS
+pub fn find_all_revisions(conn: &mut SqliteConnection) -> Vec<Revision> {
+    use self::schema::revisions::dsl::*;
+    let results = revisions
+        .select(Revision::as_select())
+        .load(conn)
+        .expect("Error loading revisions");
+    return results;
+}
+
+pub fn create_revision(conn: &mut SqliteConnection, equipment_id: &i32, tipo: &String, target: &String) -> Revision {
+    use crate::schema::revisions;
+
+    let new_revision = models::NewRevision { equipment_id, tipo, target };
+
+    let revision = diesel::insert_into(revisions::table)
+        .values(&new_revision)
+        .returning(models::Revision::as_returning())
+        .get_result(conn)
+        .expect("Error saving new equipment");
+
+    return revision;
+}

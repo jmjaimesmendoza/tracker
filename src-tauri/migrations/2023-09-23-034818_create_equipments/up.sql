@@ -29,3 +29,12 @@ CREATE TABLE logs (
   FOREIGN KEY (equipment_id) REFERENCES equipments (id),
   FOREIGN KEY (person_id) REFERENCES persons (id)
 );
+
+CREATE TABLE revisions (
+  id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+  equipment_id INTEGER NOT NULL,
+  tipo TEXT NOT NULL CHECK ( tipo IN ('D','K')),
+  target TEXT NOT NULL,
+
+  FOREIGN KEY (equipment_id) REFERENCES equipments (id)
+)

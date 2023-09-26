@@ -28,6 +28,15 @@ diesel::table! {
 }
 
 diesel::table! {
+    revisions (id) {
+        id -> Integer,
+        equipment_id -> Integer,
+        tipo -> Text,
+        target -> Text,
+    }
+}
+
+diesel::table! {
     users (id) {
         id -> Integer,
         username -> Text,
@@ -37,10 +46,12 @@ diesel::table! {
 
 diesel::joinable!(logs -> equipments (equipment_id));
 diesel::joinable!(logs -> persons (person_id));
+diesel::joinable!(revisions -> equipments (equipment_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
     equipments,
     logs,
     persons,
+    revisions,
     users,
 );

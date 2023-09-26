@@ -10,7 +10,7 @@
 	import { personStore, setPersons } from "../../stores/personStore";
 	import { writable } from "svelte/store";
   import { format } from "date-fns";
-  import SelectFilter from './SelectFilter.svelte';
+  import SelectFilter from '../../components/SelectFilter.svelte';
 
 
   $: personList = $personStore;
@@ -24,9 +24,9 @@
     return filterValue === value;
   };
 
-  const eskeler = writable([]);   
+  const parsedLogs = writable([]);   
 
-  const table = createTable(eskeler, {
+  const table = createTable(parsedLogs, {
     sort: addSortBy({ disableMultisort: true }),
     filter: addColumnFilters(),
   });
@@ -42,6 +42,11 @@
         sort: {
           invert: true,
         },
+        filter: {
+          fn: matchFilter,
+          render: ({ filterValue, preFilteredValues }) =>
+            createRender(SelectFilter, { filterValue, preFilteredValues }),
+        },
       },
     }),
     table.column({
@@ -50,6 +55,11 @@
       plugins: {
         sort: {
           invert: true,
+        },
+        filter: {
+          fn: matchFilter,
+          render: ({ filterValue, preFilteredValues }) =>
+            createRender(SelectFilter, { filterValue, preFilteredValues }),
         },
       },
     }),
@@ -68,7 +78,7 @@
       },
     }),
     table.column({
-      header: "Kilometros",
+      header: "Kilometros/Horas",
       accessor: "km",
       plugins: {
         sort: {
@@ -88,7 +98,8 @@
   onMount(async () => {
     await setLogs()
     await setEquipments()
-    await setPersons() 
+    await setPersons()
+    
     let raaah = personList && equipmentList && logsList?.map((log) => {
       const person = personList.find((person) => person.id === log.person_id);
       const equipment = equipmentList.find((equipment) => equipment.id === log.equipment_id);
@@ -98,12 +109,10 @@
         km: log.km,
         job: log.job,
         description: log.description,
-        date: format(new Date(log.created_at), "dd/MM/yyyy"),
+        date: format(new Date(log.created_at.replace(/-/g, '/')), "dd/MM/yyyy"),
       }
     });
-    console.log(raaah);
-    
-    eskeler.set(raaah)
+    parsedLogs.set(raaah)
   });
 </script>
 <div>

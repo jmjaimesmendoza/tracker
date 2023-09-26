@@ -21,6 +21,17 @@ pub struct Log {
     pub description: String,
     pub created_at: String
 }
+
+#[derive(Queryable, Selectable, Serialize)]
+#[diesel(table_name = crate::schema::revisions)]
+#[diesel(check_for_backend(diesel::sqlite::Sqlite))]
+pub struct Revision {
+    pub id: i32,
+    pub equipment_id: i32,
+    pub tipo: String,
+    pub target: String,
+}
+
 #[derive(Queryable, Selectable, Serialize)]
 #[diesel(table_name = crate::schema::persons)]
 #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
@@ -41,6 +52,7 @@ use crate::schema::equipments;
 use crate::schema::logs;
 use crate::schema::persons;
 use crate::schema::users;
+use crate::schema::revisions;
 
 #[derive(Insertable)]
 #[diesel(table_name = equipments)]
@@ -68,4 +80,12 @@ pub struct NewPerson<'a> {
 pub struct NewUser<'a> {
     pub username: &'a str,
     pub hash: &'a str,
+}
+
+#[derive(Insertable)]
+#[diesel(table_name = revisions)]
+pub struct NewRevision<'a> {
+    pub equipment_id: &'a i32,
+    pub tipo: &'a String,
+    pub target: &'a String,
 }

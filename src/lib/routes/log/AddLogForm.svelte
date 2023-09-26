@@ -16,6 +16,7 @@
 		"Reparacion mayor",
 		"Cambio de aceite y filtros"
 	];
+	let selectedOption = "D";
 	$: personItems = $personStore.map((person) => ({
 		label: person.name,
 		value: person.id
@@ -24,7 +25,7 @@
 		label: equipment.name,
 		value: equipment.id
 	}));
-
+	let target: any;
 	async function onSubmit() {
 		let equipmentId = parseInt(selectedEquipment?.value);
 		let personId = parseInt(selectedPerson?.value);
@@ -36,6 +37,11 @@
 			km,
 			job
 		});
+		await invoke("add_revision", {
+			equipmentId,
+			tipo: selectedOption,
+			target: target.toString()
+		})
 
 		close();
 	}
@@ -75,25 +81,48 @@
 		<label for="description" class="text-sm text-gray-600">Descripcion</label>
 		<input
 			id="description"
-			class="border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:border-indigo-500"
+			class="border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:border-green-500"
 			type="text"
 			placeholder="Nombre del Equipo"
 			bind:value={description}
 		/>
 	</div>
 	<div class="flex flex-col">
-		<label for="km" class="text-sm text-gray-600">Kilometraje</label>
+		<label for="km" class="text-sm text-gray-600">Kilometraje/Horas Actuales</label>
 		<input
 			id="km"
-			class="border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:border-indigo-500"
+			class="border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:border-green-500"
 			type="number"
-			placeholder="Kilometros del Equipo"
+			placeholder="Kilometros/Horas del Equipo"
 			bind:value={km}
 		/>
 	</div>
+	<div class="flex flex-col">
+		<h2 class="text-center font-bold font">Proxima Revision</h2>
+		<div class="flex justify-evenly gap-20 mt-8">
+			<label>
+				<input type="radio" bind:group={selectedOption} value="D" />
+				Fecha
+			</label>
+			
+			<label>
+				<input type="radio" bind:group={selectedOption} value="K" />
+				Kilometros / Horas
+			</label>
+		</div>
+			<div class="flex flex-col mt-8">	
+			{#if selectedOption === "D"}
+			<label for="target">Fecha revision:</label>
+			<input id="target" class="border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:border-green-500 h-12" type="date" name="target"  bind:value={target}/>
+			{:else if selectedOption === "K"}
+			<label for="revision_km">Kilometros/Horas revision:</label>
+			<input id="target" class="border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:border-green-500 h-12" type="number" name="target" bind:value={target} />
+			{/if}
+		</div>
+	</div>
 	<button
 		type="submit"
-		class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-300"
+		class="bg-green-400 hover:bg-green-500 text-white font-semibold py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-green-300"
 	>
 		Añadir Registro
 	</button>
