@@ -1,5 +1,4 @@
 <script>
-  import { invoke } from "@tauri-apps/api/tauri";
   import { addEquipment, setEquipments } from "../../stores/equipmentStore";
   import { getContext } from "svelte";
 
@@ -8,7 +7,6 @@
   let test = "";
   async function onSubmit() {
     await addEquipment(name, km)
-    await setEquipments()
     close()
   }
   const { close } = getContext('simple-modal');

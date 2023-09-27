@@ -9,6 +9,7 @@ pub struct Equipment {
     pub name: String,
     pub km: i32,
 }
+
 #[derive(Queryable, Selectable, Serialize)]
 #[diesel(table_name = crate::schema::logs)]
 #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
@@ -16,8 +17,8 @@ pub struct Log {
     pub id: i32,
     pub equipment_id: i32,
     pub person_id: i32,
-    pub km: i32,
     pub job: String,
+    pub km: i32,
     pub description: String,
     pub created_at: String
 }

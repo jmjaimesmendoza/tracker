@@ -2,8 +2,9 @@
 	import { getContext } from "svelte";
 	import { addPerson, personStore, setPersons } from "../../stores/personStore";
 	import Select from "svelte-select";
-	import { equipmentStore } from "../../stores/equipmentStore";
+	import { equipmentStore, setEquipments } from "../../stores/equipmentStore";
 	import { invoke } from "@tauri-apps/api";
+  import { setLogs } from "../../stores/logStore"
 	const { close } = getContext("simple-modal");
 	let selectedEquipment: { value: number; label: string } | null = null;
 	let selectedPerson: { value: number; label: string } | null = null;
@@ -42,6 +43,9 @@
 			tipo: selectedOption,
 			target: target.toString()
 		})
+	
+		await setLogs()
+		await setEquipments()
 
 		close();
 	}

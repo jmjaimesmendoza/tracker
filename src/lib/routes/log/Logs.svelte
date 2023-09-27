@@ -5,32 +5,42 @@
   import type { ColumnFilterFn } from 'svelte-headless-table/plugins';
   import Modal from 'svelte-simple-modal';
   import AddLogModal from "./AddLogModal.svelte";
-  import { logStore, setLogs } from "../../stores/logStore";
-	import { equipmentStore, setEquipments } from "../../stores/equipmentStore";
+  import { logStore } from "../../stores/logStore";
+	import { equipmentStore } from "../../stores/equipmentStore";
 	import { personStore, setPersons } from "../../stores/personStore";
 	import { writable } from "svelte/store";
-  import { format } from "date-fns";
+  import { format, parse } from "date-fns";
   import SelectFilter from '../../components/SelectFilter.svelte';
-
+  import {bind} from "svelte-simple-modal"
+  import EditLogForm from "./EditLogForm.svelte"
 
   $: personList = $personStore;
 
   $: equipmentList = $equipmentStore;
   
   $: logsList = $logStore;
+  
+  const modal = writable([])
 
   const matchFilter: ColumnFilterFn = ({ filterValue, value }) => {
     if (filterValue === undefined) return true;
     return filterValue === value;
   };
 
-  const parsedLogs = writable([]);   
+  const showPopupWithProps = (logId, newDate) => {
+		modal.set(bind(EditLogForm, { logId, newDate: format(parse(newDate, "dd/MM/yyyy", new Date()), "yyyy-MM-dd") }));
+	};
 
+  const parsedLogs = writable([]);
   const table = createTable(parsedLogs, {
     sort: addSortBy({ disableMultisort: true }),
     filter: addColumnFilters(),
   });
   const columns = table.createColumns([
+    table.column({
+      header: "Id",
+      accessor: "id",
+    }),
     table.column({
       header: "Fecha",
       accessor: "date",
@@ -95,15 +105,12 @@
     table.createViewModel(columns);
   const { filterValues } = pluginStates.filter;
 
-  onMount(async () => {
-    await setLogs()
-    await setEquipments()
-    await setPersons()
-    
+  onMount(async () => {    
     let raaah = personList && equipmentList && logsList?.map((log) => {
       const person = personList.find((person) => person.id === log.person_id);
       const equipment = equipmentList.find((equipment) => equipment.id === log.equipment_id);
       return { 
+        id: log.id,
         name: equipment?.name,
         person: person?.name,
         km: log.km,
@@ -116,7 +123,7 @@
   });
 </script>
 <div>
-  <Modal>
+  <Modal show={$modal}>
     <AddLogModal />
   </Modal>
   <table {...$tableAttrs} class="min-w-full divide-y divide-gray-200">
@@ -161,9 +168,12 @@
             {...rowAttrs}
             class={row.id % 2 === 0 ? "bg-gray-100" : "bg-white"}
           >
-            {#each row.cells as cell (cell.id)}
-              <Subscribe attrs={cell.attrs()} let:attrs>
-                <td {...attrs} class="px-6 py-4 whitespace-nowrap">
+          {#each row.cells as cell (cell.id)}
+          <Subscribe attrs={cell.attrs()} let:attrs>
+            <td {...attrs} class="px-6 py-4 whitespace-nowrap">
+              {#if cell.column.accessorKey === "date"}
+                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" on:click={()=>showPopupWithProps(row.original.id,cell.value)}>EDIT</button>
+              {/if}
                   <Render of={cell.render()} />
                 </td>
               </Subscribe>
@@ -171,6 +181,7 @@
           </tr>
         </Subscribe>
       {/each}
+      
     </tbody>
   </table>
 </div>

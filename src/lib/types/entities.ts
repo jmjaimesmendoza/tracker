@@ -2,6 +2,7 @@ export type Equipment = {
   id: number;
   name: string;
   km: number;
+  eskeler: Date | null;
 };
 
 export type Person = {

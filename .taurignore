@@ -1,1 +1,1 @@
-src-tauri/tracker.sqlite
+./src-tauri/tracker.sqlite

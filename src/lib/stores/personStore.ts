@@ -6,6 +6,7 @@ export const personStore: Writable<Array<Person>> = writable([]);
 
 export const addPerson = async ( name: string) => {
   const res = await invoke("add_person", { name });
+  await setPersons();
 }
 
 export const setPersons = async () => {

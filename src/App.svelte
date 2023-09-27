@@ -9,13 +9,20 @@
   import { globalHistory } from "svelte-routing/src/history";
   import { currentPath } from "./lib/stores/stores";
 	import Logs from "./lib/routes/log/Logs.svelte";
+	import { Toaster } from "svelte-french-toast";
+  import { setEquipments } from "./lib/stores/equipmentStore"
+  import { setPersons } from "./lib/stores/personStore"
+  import { setLogs } from "./lib/stores/logStore"
 
 	let unsub: () => void;
 
-	onMount(() => {
+	onMount(async () => {
     unsub = globalHistory.listen(({ location, action }) => {
       $currentPath = location.pathname
     })
+		await setPersons()
+		await setLogs()
+    await setEquipments()
   })
 
 	onDestroy(() => {
@@ -25,7 +32,8 @@
 
 <div class="flex">
 	<Sidebar/>
-	<div class="flex-1">
+	<Toaster />
+	<div class="flex-1 z-20">
 		<Router>
 			<Route path="/" component={Equipments} />
 			<Route path="/logs" component={Logs} />

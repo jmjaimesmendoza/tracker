@@ -15,6 +15,7 @@ use tracker::models::Log;
 use tracker::models::Revision;
 use tracker::models::{Equipment, Person};
 use tracker::update_equipment_km_by_id;
+use tracker::update_log_created_at_by_id;
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 //tauri command to call create equipment with params from the frontend
@@ -35,6 +36,11 @@ fn add_log(equipment_id: i32, person_id: i32, description: String, km: i32,job: 
     let connection = &mut establish_connection();
     update_equipment_km_by_id(connection, &equipment_id, &km);
     return create_log(connection, &equipment_id, &person_id, &description, &km, &job);
+}
+#[tauri::command]
+fn edit_log_date(log_id: i32, new_date: String) -> Log {
+    let connection = &mut establish_connection();
+    return update_log_created_at_by_id(connection, &log_id, &new_date);
 }
 
 #[tauri::command]
@@ -86,7 +92,8 @@ fn main() {
             add_log,
             get_logs,
             add_revision,
-            get_revisions
+            get_revisions,
+            edit_log_date
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

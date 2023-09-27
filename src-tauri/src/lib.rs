@@ -39,11 +39,11 @@ pub fn find_all_equipments(conn: &mut SqliteConnection) -> Vec<Equipment> {
         .expect("Error loading equipments");
     return results;
 }
-pub fn find_equipment_by_id(conn: &mut SqliteConnection, post_id: i32) -> Equipment {
+pub fn find_equipment_by_id(conn: &mut SqliteConnection, equipment_id: i32) -> Equipment {
     use self::schema::equipments::dsl::*;
 
     let equipment = equipments
-        .find(post_id)
+        .find(equipment_id)
         .select(Equipment::as_select())
         .first(conn)
         .expect("Error loading equipment");
@@ -59,8 +59,7 @@ pub fn update_equipment_km_by_id(conn: &mut SqliteConnection, equipment_id: &i32
     return equipment
 }
 //LOGS
-pub fn create_log(
-    conn: &mut SqliteConnection, equipment_id: &i32, person_id: &i32, description: &String, km: &i32, job: &String ) -> Log {
+pub fn create_log(conn: &mut SqliteConnection, equipment_id: &i32, person_id: &i32, description: &String, km: &i32, job: &String ) -> Log {
     use crate::schema::logs;
 
     let new_log = NewLog { equipment_id, person_id, description, km, job };
@@ -71,6 +70,16 @@ pub fn create_log(
         .get_result(conn)
         .expect("Error saving new equipment");
 
+    return log;
+}
+pub fn update_log_created_at_by_id(conn: &mut SqliteConnection, log_id: &i32, new_created_at: &String) -> Log {
+    use self::schema::logs::dsl::*;
+
+    let log = diesel::update(logs.find(log_id))
+    .set(created_at.eq(new_created_at))
+    .get_result(conn)
+    .expect("Error loading equipment");
+    
     return log;
 }
 pub fn find_all_logs(conn: &mut SqliteConnection) -> Vec<Log> {
