@@ -76,7 +76,7 @@
         return {...e, lastRevision: format(new Date(lastLog.created_at.replace(/-/g, '/')), "dd/MM/yyy"),expectedRevisionDate: `${revision.target} Km/Horas`}
       };
       avgs.pop()
-      const avgkm = _.mean(avgs, "km");
+      const avgkm = _.mean(avgs);
       const estimatedDays = revDiff/avgkm;
       const estimatedRevisionDate = addDays(new Date(lastLog.created_at.replace(/-/g, '/')), estimatedDays);
       
