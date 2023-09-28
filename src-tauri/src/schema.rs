@@ -1,10 +1,20 @@
 // @generated automatically by Diesel CLI.
 
 diesel::table! {
+    brands (id) {
+        id -> Integer,
+        name -> Text,
+    }
+}
+
+diesel::table! {
     equipments (id) {
         id -> Integer,
         name -> Text,
         km -> Integer,
+        model_id -> Integer,
+        nserial -> Text,
+        notes -> Text,
     }
 }
 
@@ -17,6 +27,14 @@ diesel::table! {
         km -> Integer,
         description -> Text,
         created_at -> Text,
+    }
+}
+
+diesel::table! {
+    models (id) {
+        id -> Integer,
+        brand_id -> Integer,
+        name -> Text,
     }
 }
 
@@ -44,13 +62,17 @@ diesel::table! {
     }
 }
 
+diesel::joinable!(equipments -> models (model_id));
 diesel::joinable!(logs -> equipments (equipment_id));
 diesel::joinable!(logs -> persons (person_id));
+diesel::joinable!(models -> brands (brand_id));
 diesel::joinable!(revisions -> equipments (equipment_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
+    brands,
     equipments,
     logs,
+    models,
     persons,
     revisions,
     users,

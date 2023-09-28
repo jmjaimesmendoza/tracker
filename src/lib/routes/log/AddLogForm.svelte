@@ -18,15 +18,18 @@
 		"Cambio de aceite y filtros"
 	];
 	let selectedOption = "D";
+	let target: any;
+
 	$: personItems = $personStore.map((person) => ({
 		label: person.name,
 		value: person.id
 	}));
+
 	$: equipmentItems = $equipmentStore.map((equipment) => ({
 		label: equipment.name,
 		value: equipment.id
 	}));
-	let target: any;
+
 	async function onSubmit() {
 		let equipmentId = parseInt(selectedEquipment?.value);
 		let personId = parseInt(selectedPerson?.value);
@@ -43,7 +46,7 @@
 			tipo: selectedOption,
 			target: target.toString()
 		})
-	
+
 		await setLogs()
 		await setEquipments()
 
@@ -83,17 +86,17 @@
 	</div>
 	<div class="flex flex-col">
 		<label for="description" class="text-sm text-gray-600">Descripcion</label>
-		<input
+		<input required
 			id="description"
 			class="border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:border-green-500"
 			type="text"
-			placeholder="Nombre del Equipo"
+			placeholder="Descripcion"
 			bind:value={description}
 		/>
 	</div>
 	<div class="flex flex-col">
 		<label for="km" class="text-sm text-gray-600">Kilometraje/Horas Actuales</label>
-		<input
+		<input required
 			id="km"
 			class="border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:border-green-500"
 			type="number"
@@ -105,22 +108,22 @@
 		<h2 class="text-center font-bold font">Proxima Revision</h2>
 		<div class="flex justify-evenly gap-20 mt-8">
 			<label>
-				<input type="radio" bind:group={selectedOption} value="D" />
+				<input required type="radio" bind:group={selectedOption} value="D" />
 				Fecha
 			</label>
-			
+
 			<label>
-				<input type="radio" bind:group={selectedOption} value="K" />
+				<input required type="radio" bind:group={selectedOption} value="K" />
 				Kilometros / Horas
 			</label>
 		</div>
-			<div class="flex flex-col mt-8">	
+			<div class="flex flex-col mt-8">
 			{#if selectedOption === "D"}
 			<label for="target">Fecha revision:</label>
-			<input id="target" class="border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:border-green-500 h-12" type="date" name="target"  bind:value={target}/>
+			<input required id="target" class="border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:border-green-500 h-12" type="date" name="target"  bind:value={target}/>
 			{:else if selectedOption === "K"}
 			<label for="revision_km">Kilometros/Horas revision:</label>
-			<input id="target" class="border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:border-green-500 h-12" type="number" name="target" bind:value={target} />
+			<input required id="target" class="border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:border-green-500 h-12" type="number" name="target" bind:value={target} />
 			{/if}
 		</div>
 	</div>

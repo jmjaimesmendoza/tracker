@@ -1,12 +1,33 @@
-<script>
+<script lang="ts">
+  import { invoke } from "@tauri-apps/api"
   import { addEquipment, setEquipments } from "../../stores/equipmentStore";
-  import { getContext } from "svelte";
-
+  import { getContext, onMount } from "svelte";
+  import Select from "svelte-select";
   let name = "";
   let km = 0;
-  let test = "";
+  let notes = "";
+  let nserial = "";
+  let modelIn;
+  
+  let items: {value: number, label: string}[]=[];
+  let models: {id: number, brand_id:number, name: string}[] = [];
+  let brands: {id: number, name: string}[] = [];
+  $: console.log(items);
+  
+  $: items = models.map((model)=> {
+    return {
+      label: `${brands.find(b=> b.id===model.brand_id)?.name} - ${model.name}`,
+      value: model.id
+    }
+  })
+
+  onMount (async () => {
+    models = JSON.parse(await invoke("get_models"));
+    brands = JSON.parse(await invoke("get_brands"));    
+  })
+
   async function onSubmit() {
-    await addEquipment(name, km)
+    await addEquipment(name, km, modelIn.value, nserial, notes);
     close()
   }
   const { close } = getContext('simple-modal');
@@ -15,12 +36,35 @@
 <form class="grid grid-cols-1 gap-4 mt-4" on:submit|preventDefault={onSubmit}>
   <div class="flex flex-col">
     <label for="name" class="text-sm text-gray-600">Nombre</label>
-    <input id="name" class="border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:border-green-500" type="text" placeholder="Nombre del Equipo" bind:value={name} />
+    <input required id="name" class="border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:border-green-500" type="text" placeholder="Nombre del Equipo" bind:value={name} />
+  </div>
+  <div class="flex flex-col">
+    <label for="model" class="text-sm text-gray-600">Modelo</label>
+    <Select
+      id="model"
+			placeholder={"Modelo"}
+			items={items}
+			bind:value={modelIn}
+    />
   </div>
   <div class="flex flex-col">
     <label for="km" class="text-sm text-gray-600">Kilometros/Horas</label>
-    <input id="km" class="border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:border-green-500" type="number" placeholder="Kilometros/Horas del Equipo" bind:value={km} />
+    <input required id="km" class="border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:border-green-500" type="number" placeholder="Kilometros/Horas del Equipo" bind:value={km} />
   </div>
+  <div class="flex flex-col">
+    <label for="nserial" class="text-sm text-gray-600">Serial</label>
+    <input required id="nserial" class="border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:border-green-500" type="text" placeholder="Nombre del Equipo" bind:value={nserial} />
+  </div>
+  <div class="flex flex-col">
+		<label for="notes" class="text-sm text-gray-600">Notas</label>
+		<input required
+			id="notes"
+			class="border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:border-green-500"
+			type="text"
+			placeholder="Descripcion"
+			bind:value={notes}
+		/>
+	</div>
   <button type="submit" class="bg-green-500 hover:bg-green-400 text-white font-semibold py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-green-300">
     Añadir Equipo
   </button>

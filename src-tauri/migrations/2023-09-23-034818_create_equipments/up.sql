@@ -1,8 +1,42 @@
 -- Your SQL goes here
+CREATE TABLE brands (
+  id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+  name TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE models (
+  id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+  brand_id INTEGER NOT NULL,
+  name TEXT NOT NULL,
+
+  FOREIGN KEY (brand_id) REFERENCES brands (id)
+);
+INSERT INTO brands (name) VALUES ("John Deere"), 
+("New Holland"),
+("Same"),
+("Massey Ferguson"),
+("International"),
+("Caterpillar"),
+("Komatsu"),
+("Stihl"),
+("Shindaiwa"),
+("Mardal"),
+("Toyota"),
+("Hiunday"),
+("Chevrolet"),
+("Ford"),
+("Kawasaki");
+INSERT INTO models (name, brand_id) VALUES ("Tractor", 1),("Tractor", 2),("Tractor", 3);
+
 CREATE TABLE equipments (
   id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-  name TEXT NOT NULL,
-  km INTEGER NOT NULL
+  name TEXT UNIQUE NOT NULL,
+  km INTEGER NOT NULL,
+  model_id INTEGER NOT NULL,
+  nserial TEXT NOT NULL,
+  notes TEXT NOT NULL,
+
+  FOREIGN KEY (model_id) REFERENCES models (id)
 );
 
 CREATE TABLE users (

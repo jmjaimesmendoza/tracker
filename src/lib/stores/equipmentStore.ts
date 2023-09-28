@@ -8,8 +8,8 @@ import { toast, Toaster, useToasterStore } from "svelte-french-toast"
 
 export const equipmentStore: Writable<Array<Equipment>> = writable([]);
 
-export const addEquipment = async ( name: string, km: number) => {
-  const res = await invoke("add_equipment", { name, km });
+export const addEquipment = async ( name: string, km: number, model_id: number, nserial: string, notes: string) => {
+  const res = await invoke("add_equipment", { name, km, model_id, nserial, notes });
   await setEquipments();
 }
 

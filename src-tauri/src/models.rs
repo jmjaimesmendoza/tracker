@@ -8,7 +8,29 @@ pub struct Equipment {
     pub id: i32,
     pub name: String,
     pub km: i32,
+    pub model_id: i32,
+    pub nserial: String,
+    pub notes: String
 }
+
+#[derive(Queryable, Selectable, Serialize)]
+#[diesel(table_name = crate::schema::brands)]
+#[diesel(check_for_backend(diesel::sqlite::Sqlite))]
+pub struct Brand {
+    pub id: i32,
+    pub name: String,
+}
+
+
+#[derive(Queryable, Selectable, Serialize)]
+#[diesel(table_name = crate::schema::models)]
+#[diesel(check_for_backend(diesel::sqlite::Sqlite))]
+pub struct Model {
+    pub id: i32,
+    pub brand_id: i32,
+    pub name: String,
+}
+
 
 #[derive(Queryable, Selectable, Serialize)]
 #[diesel(table_name = crate::schema::logs)]
@@ -54,12 +76,17 @@ use crate::schema::logs;
 use crate::schema::persons;
 use crate::schema::users;
 use crate::schema::revisions;
+use crate::schema::brands;
+use crate::schema::models;
 
 #[derive(Insertable)]
 #[diesel(table_name = equipments)]
 pub struct NewEquipment<'a> {
     pub name: &'a str,
     pub km: &'a i32,
+    pub model_id: &'a i32,
+    pub nserial: &'a str,
+    pub notes: &'a str,
 }
 #[derive(Insertable)]
 #[diesel(table_name = logs)]
@@ -89,4 +116,15 @@ pub struct NewRevision<'a> {
     pub equipment_id: &'a i32,
     pub tipo: &'a String,
     pub target: &'a String,
+}
+#[derive(Insertable)]
+#[diesel(table_name = brands)]
+pub struct NewBrand<'a> {
+    pub name: &'a String,
+}
+#[derive(Insertable)]
+#[diesel(table_name = models)]
+pub struct NewModel<'a> {
+    pub brand_id: &'a i32,
+    pub name: &'a String,
 }

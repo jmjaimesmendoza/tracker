@@ -38,11 +38,11 @@
     },
     "windows": [
       {
-        "fullscreen": true,
+        "fullscreen": false,
         "resizable": true,
         "title": "TrackTor",
-        "width": 800,
-        "height": 600
+        "width": 1240,
+        "height": 720
       }
     ]
   }

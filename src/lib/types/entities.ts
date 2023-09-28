@@ -2,6 +2,10 @@ export type Equipment = {
   id: number;
   name: string;
   km: number;
+  brand: string;
+  model: string;
+  nserial: number;
+  notes: string;
   eskeler: Date | null;
 };
 

@@ -1,6 +1,8 @@
 pub mod models;
 pub mod schema;
 
+use crate::models::{NewBrand, NewModel, Brand, Model};
+
 use self::models::{Equipment, NewEquipment};
 use self::models::{Log, NewLog};
 use self::models::{Person, NewPerson};
@@ -15,19 +17,66 @@ pub fn establish_connection() -> SqliteConnection {
     SqliteConnection::establish(&database_url)
         .unwrap_or_else(|_| panic!("Error connecting to {}", database_url))
 }
+//BRANDS
+pub fn create_brand(conn: &mut SqliteConnection, name: &String) -> Brand {
+    use crate::schema::brands;
+
+    let new_brand = NewBrand { name };
+
+    let brand = diesel::insert_into(brands::table)
+        .values(&new_brand)
+        .returning(Brand::as_returning())
+        .get_result(conn)
+        .expect("Error saving new brand");
+
+    return brand;
+}
+
+pub fn find_all_brands(conn: &mut SqliteConnection) -> Vec<Brand> {
+    use self::schema::brands::dsl::*;
+
+    let results = brands
+        .select(Brand::as_select())
+        .load(conn)
+        .expect("Error loading brands");
+    return results;
+}
+//MODELS
+pub fn create_model(conn: &mut SqliteConnection, name: &String, brand_id: &i32) -> Model {
+    use crate::schema::models;
+
+    let new_model = NewModel { name, brand_id };
+
+    let model = diesel::insert_into(models::table)
+        .values(&new_model)
+        .returning(Model::as_returning())
+        .get_result(conn)
+        .expect("Error saving new model");
+
+    return model;
+}
+
+pub fn find_all_models(conn: &mut SqliteConnection) -> Vec<Model> {
+    use self::schema::models::dsl::*;
+    let results = models
+        .select(Model::as_select())
+        .load(conn)
+        .expect("Error loading models");
+    return results;
+}
 //EQUIPMENT
-pub fn create_equipment(conn: &mut SqliteConnection, name: &str, km: &i32) -> Equipment {
+pub fn create_equipment(conn: &mut SqliteConnection, name: &str, km: &i32,  model_id: &i32, nserial: &str, notes: &str) -> Equipment {
     use crate::schema::equipments;
 
-    let new_equipment = NewEquipment { name, km };
+    let new_equipment = NewEquipment { name, km, model_id, nserial, notes };
 
-    let eq = diesel::insert_into(equipments::table)
+    let equipment = diesel::insert_into(equipments::table)
         .values(&new_equipment)
         .returning(Equipment::as_returning())
         .get_result(conn)
         .expect("Error saving new equipment");
 
-    return eq;
+    return equipment;
 }
 
 pub fn find_all_equipments(conn: &mut SqliteConnection) -> Vec<Equipment> {
@@ -131,7 +180,7 @@ pub fn create_revision(conn: &mut SqliteConnection, equipment_id: &i32, tipo: &S
 
     let revision = diesel::insert_into(revisions::table)
         .values(&new_revision)
-        .returning(models::Revision::as_returning())
+        .returning(Revision::as_returning())
         .get_result(conn)
         .expect("Error saving new equipment");
 
