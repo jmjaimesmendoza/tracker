@@ -3,6 +3,7 @@
 	import Equipments from "./lib/routes/equipment/Equipments.svelte";
 	import About from "./lib/components/About.svelte";
 	import Persons from "./lib/routes/person/Persons.svelte";
+	import Models from "./lib/routes/modelos/Models.svelte";
 	import { Router, Route } from "svelte-routing";
   import Sidebar from "./lib/components/Sidebar.svelte";
   import { onDestroy, onMount } from "svelte";
@@ -38,6 +39,7 @@
 			<Route path="/" component={Equipments} />
 			<Route path="/logs" component={Logs} />
 			<Route path="/personas" component={Persons} />
+			<Route path="/modelos" component={Models} />
 		</Router>
 	</div>
 </div>

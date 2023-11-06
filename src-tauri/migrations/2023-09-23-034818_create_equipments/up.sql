@@ -11,6 +11,7 @@ CREATE TABLE models (
 
   FOREIGN KEY (brand_id) REFERENCES brands (id)
 );
+
 INSERT INTO brands (name) VALUES ("John Deere"), 
 ("New Holland"),
 ("Same"),
@@ -26,7 +27,6 @@ INSERT INTO brands (name) VALUES ("John Deere"),
 ("Chevrolet"),
 ("Ford"),
 ("Kawasaki");
-INSERT INTO models (name, brand_id) VALUES ("Tractor", 1),("Tractor", 2),("Tractor", 3);
 
 CREATE TABLE equipments (
   id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
