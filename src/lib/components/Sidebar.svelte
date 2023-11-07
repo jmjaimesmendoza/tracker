@@ -19,7 +19,7 @@
         <a href="/personas" class="block py-2 px-4 hover:bg-green-400 transition duration-200 {$currentPath === '/personas' ? 'bg-green-400' : ''}" use:link>Personas</a>
       </li>
       <li>
-        <a href="/modelos" class="block py-2 px-4 hover:bg-green-400 transition duration-200 {$currentPath === '/modelos' ? 'bg-green-400' : ''}" use:link>Modelos</a>
+        <a href="/modelos" class="block py-2 px-4 hover:bg-green-400 transition duration-200 {$currentPath === '/modelos' ? 'bg-green-400' : ''}" use:link>Marcas y Modelos</a>
       </li>
     </ul>
   </nav>

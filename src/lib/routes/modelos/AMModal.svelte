@@ -1,8 +1,8 @@
 <script>
   import { getContext } from "svelte";
-  import AddEquipmentForm from "./AddModelForm.svelte";
+  import AddModelForm from "./AddModelForm.svelte";
   const { open, close } = getContext("simple-modal");
-  const showForm = () => open(AddEquipmentForm);
+  const showForm = () => open(AddModelForm);
 </script>
 
 <button

@@ -1,19 +1,48 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { createTable, Subscribe, Render } from "svelte-headless-table";
-  import { addSortBy } from "svelte-headless-table/plugins";
+  import { createTable, Subscribe, Render, createRender } from "svelte-headless-table";
+  import { addSortBy, addColumnFilters } from "svelte-headless-table/plugins";
+  import type { ColumnFilterFn } from 'svelte-headless-table/plugins';
   import Modal from 'svelte-simple-modal';
-  import AEModal from "./AMModal.svelte";
+  import AMModal from "./AMModal.svelte";
+  import ABModal from "./ABModal.svelte";
   import { equipmentStore } from "../../stores/equipmentStore";
-	import { logStore } from "../../stores/logStore";
 	import { get, writable } from "svelte/store";
   import _ from "lodash";
-	import { addDays, differenceInDays, format } from "date-fns";
-  let revisions: {id: number, equipment_id: number, tipo: string, target: string}[] = [];
-  const parsedEquipment = writable([]);
-  const table = createTable(equipmentStore, {
+  import { invoke } from "@tauri-apps/api";
+  import SelectFilter from "../../components/SelectFilter.svelte";
+  const modelStore = writable([]);
+  
+  const table = createTable(modelStore, {
     sort: addSortBy({ disableMultisort: true }),
+    filter: addColumnFilters()
   });
+
+  const matchFilter: ColumnFilterFn = ({ filterValue, value }) => {
+    if (filterValue === undefined) return true;
+    return filterValue === value;
+  };
+
+  const parseModels = (models, brands) => {
+    return models.map((model) => {
+      const brand = brands.find((brand) => brand.id === model.brand_id);
+      return {
+        id: model.id,
+        name: model.name,
+        brand: brand.name,
+      };
+    });
+  };
+  onMount(async () => {
+    const res = await invoke("get_models");
+    const brandRequest = await invoke("get_brands");
+    const models = JSON.parse(res);
+    const brands = JSON.parse(brandRequest);
+    const parsedModels = parseModels(models, brands); 
+    
+    modelStore.set(parsedModels);
+  });
+
   const columns = table.createColumns([
     table.column({
       header: "Nombre",
@@ -25,26 +54,31 @@
       },
     }),
     table.column({
-      header: "Km Actuales",
-      accessor: "km",
-    }),
-    table.column({
-      header: "Ultima revision",
-      accessor: "lastRevision",
-    }),
-    table.column({
-      header: "Proxima revision",
-      accessor: "expectedRevisionDate",
-    }),
+      header: "Marca",
+      accessor: "brand",
+      plugins: {
+        sort: {
+          invert: true,
+        },
+        filter: {
+          fn: matchFilter,
+          render: ({ filterValue, preFilteredValues }) =>
+            createRender(SelectFilter, { filterValue, preFilteredValues }),
+        },
+      }
+    })
   ]);
-  const { headerRows, rows, tableAttrs, tableBodyAttrs } =
+  const { headerRows, rows, tableAttrs, tableBodyAttrs, pluginStates } =
     table.createViewModel(columns);
                                                                                                
 </script>
 
 <div>
   <Modal>
-    <AEModal />
+    <AMModal />
+  </Modal>
+  <Modal>
+    <ABModal />
   </Modal>
   <table {...$tableAttrs} class="min-w-full divide-y divide-gray-200">
     <thead>
@@ -69,6 +103,11 @@
                   {:else if props.sort.order === "desc"}
                     ⬆️
                   {/if}
+                  {#if props.filter?.render}
+                  <div>
+                    <Render of={props.filter.render} />
+                  </div>
+                {/if}
                 </th>
               </Subscribe>
             {/each}

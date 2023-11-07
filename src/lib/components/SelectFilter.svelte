@@ -12,7 +12,7 @@
   $: uniqueValues = getDistinct($preFilteredValues);
 </script>
 
-<select bind:value={$filterValue} on:click|stopPropagation class="demo">
+<select class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block p-2.5" bind:value={$filterValue} on:click|stopPropagation>
   <option value={undefined}>All</option>
   {#each uniqueValues as value}
     <option {value}>{value}</option>

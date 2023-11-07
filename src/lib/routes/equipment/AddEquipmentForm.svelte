@@ -1,6 +1,7 @@
 <script lang="ts">
   import { invoke } from "@tauri-apps/api"
   import { addEquipment, setEquipments } from "../../stores/equipmentStore";
+  import { open } from '@tauri-apps/api/dialog';
   import { getContext, onMount } from "svelte";
   import Select from "svelte-select";
   let name = "";
@@ -12,7 +13,15 @@
   let items: {value: number, label: string}[]=[];
   let models: {id: number, brand_id:number, name: string}[] = [];
   let brands: {id: number, name: string}[] = [];
-  $: console.log(items);
+  $:console.log(selected);
+  const selected = await open({
+    multiple: false,
+    filters: [{
+      name: 'Image',
+      extensions: ['png', 'jpeg', 'jpg']
+    }]
+  });
+  
   
   $: items = models.map((model)=> {
     return {
@@ -65,6 +74,10 @@
 			bind:value={notes}
 		/>
 	</div>
+  <div class="flex flex-col">
+    <label for="km" class="text-sm text-gray-600">Foto del equipo</label>
+    <input required id="km" class="border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:border-green-500" type="number" placeholder="Kilometros/Horas del Equipo" bind:value={km} />
+  </div>
   <button type="submit" class="bg-green-500 hover:bg-green-400 text-white font-semibold py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-green-300">
     Añadir Equipo
   </button>

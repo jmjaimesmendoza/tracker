@@ -20,7 +20,7 @@
   })
 
   async function onSubmit() {
-    await invoke("add_model",{name:name, brandId:brand?.value});
+    const res = await invoke("add_model",{name:name, brandId:brand?.value});
     close()
   }
   const { close } = getContext('simple-modal');
@@ -28,11 +28,11 @@
 
 <form class="grid grid-cols-1 gap-4 mt-4" on:submit|preventDefault={onSubmit}>
   <div class="flex flex-col">
-    <label for="name" class="text-sm text-gray-600">Nombre</label>
+    <label for="name" class="text-sm text-gray-600">Nombre del modelo</label>
     <input required id="name" class="border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:border-green-500" type="text" placeholder="Nombre del Modelo" bind:value={name} />
   </div>
   <div class="flex flex-col">
-    <label for="brand" class="text-sm text-gray-600">Marca</label>
+    <label for="brand" class="text-sm text-gray-600">Marca del modelo</label>
     <Select
       id="brand"
 			placeholder={"Marca"}
