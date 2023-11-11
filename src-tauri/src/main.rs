@@ -25,12 +25,24 @@ use tracker::update_log_created_at_by_id;
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 //tauri command to call create equipment with params from the frontend
-//EQUIPMENT
+// //EQUIPMENT
+// #[tauri::command]
+// fn add_equipment(name: String, km: i32, model_id: i32, nserial: String, notes: String ) -> Equipment {
+//     let connection = &mut establish_connection();
+//     return create_equipment(connection, &name, &km, &model_id, &nserial, &notes);
+// }
 #[tauri::command]
-fn add_equipment(name: String, km: i32, model_id: i32, nserial: String, notes: String ) -> Equipment {
+fn add_equipment(name: String, km: i32, model_id: i32, nserial: String, notes: String) -> Result<Equipment, String> {
     let connection = &mut establish_connection();
-    return create_equipment(connection, &name, &km, &model_id, &nserial, &notes);
+    match create_equipment(connection, &name, &km, &model_id, &nserial, &notes) {
+        Ok(equipment) => Ok(equipment),
+        Err(err) => {
+            eprintln!("Error adding equipment: {:?}", err);
+            Err(format!("Error adding equipment: {:?}", err))
+        }
+    }
 }
+
 
 #[tauri::command]
 fn get_equipments() -> Result<String, String> {
@@ -120,6 +132,7 @@ fn get_models() -> Result<String, String> {
 
 
 fn main() {
+    println!("Message from Rust");
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             get_equipments,

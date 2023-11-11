@@ -12,7 +12,6 @@
   import { format, parse } from "date-fns";
   import SelectFilter from '../../components/SelectFilter.svelte';
   import {bind} from "svelte-simple-modal"
-  import EditLogForm from "./EditLogForm.svelte"
 
   $: personList = $personStore;
 
@@ -27,8 +26,11 @@
     return filterValue === value;
   };
 
+  // const showPopupWithProps = (logId, newDate) => {
+	// 	modal.set(bind(EditLogForm, { logId, newDate: format(parse(newDate, "dd/MM/yyyy", new Date()), "yyyy-MM-dd") }));
+	// };
   const showPopupWithProps = (logId, newDate) => {
-		modal.set(bind(EditLogForm, { logId, newDate: format(parse(newDate, "dd/MM/yyyy", new Date()), "yyyy-MM-dd") }));
+		console.log('a')
 	};
 
   const parsedLogs = writable([]);

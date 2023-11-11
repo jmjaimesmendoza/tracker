@@ -65,18 +65,25 @@ pub fn find_all_models(conn: &mut SqliteConnection) -> Vec<Model> {
     return results;
 }
 //EQUIPMENT
-pub fn create_equipment(conn: &mut SqliteConnection, name: &str, km: &i32,  model_id: &i32, nserial: &str, notes: &str) -> Equipment {
+pub fn create_equipment(conn: &mut SqliteConnection, name: &str, km: &i32,  model_id: &i32, nserial: &str, notes: &str) -> Result<Equipment, diesel::result::Error> {
     use crate::schema::equipments;
 
     let new_equipment = NewEquipment { name, km, model_id, nserial, notes };
 
-    let equipment = diesel::insert_into(equipments::table)
-        .values(&new_equipment)
-        .returning(Equipment::as_returning())
-        .get_result(conn)
-        .expect("Error saving new equipment");
-
-    return equipment;
+    match diesel::insert_into(equipments::table)
+    .values(&new_equipment)
+    .returning(Equipment::as_returning())
+    .get_result(conn)
+{
+    Ok(equipment) => {
+        println!("Saved equipment {:?}", equipment);
+        Ok(equipment)
+    }
+    Err(err) => {
+        eprintln!("Error saving equipment: {:?}", err);
+        Err(err)
+    }
+}
 }
 
 pub fn find_all_equipments(conn: &mut SqliteConnection) -> Vec<Equipment> {
