@@ -35,7 +35,7 @@ CREATE TABLE equipments (
   model_id INTEGER NOT NULL,
   nserial TEXT NOT NULL,
   notes TEXT NOT NULL,
-  img TEXT,
+  path TEXT,
 
   FOREIGN KEY (model_id) REFERENCES models (id)
 );

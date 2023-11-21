@@ -65,10 +65,10 @@ pub fn find_all_models(conn: &mut SqliteConnection) -> Vec<Model> {
     return results;
 }
 //EQUIPMENT
-pub fn create_equipment(conn: &mut SqliteConnection, name: &str, km: &i32,  model_id: &i32, nserial: &str, notes: &str) -> Equipment {
+pub fn create_equipment(conn: &mut SqliteConnection, name: &str, km: &i32,  model_id: &i32, nserial: &str, notes: &str, path: &str) -> Equipment {
     use crate::schema::equipments;
 
-    let new_equipment = NewEquipment { name, km, model_id, nserial, notes };
+    let new_equipment = NewEquipment { name, km, model_id, nserial, notes, path };
 
     let equipment = diesel::insert_into(equipments::table)
         .values(&new_equipment)

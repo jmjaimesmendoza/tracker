@@ -8,20 +8,18 @@
   let km = 0;
   let notes = "";
   let nserial = "";
-  let modelIn;
+  let modelIn: {value: number, label: string};
   
   let items: {value: number, label: string}[]=[];
   let models: {id: number, brand_id:number, name: string}[] = [];
   let brands: {id: number, name: string}[] = [];
-  $:console.log(selected);
-  const selected = await open({
+  const selected = open({
     multiple: false,
     filters: [{
       name: 'Image',
       extensions: ['png', 'jpeg', 'jpg']
     }]
   });
-  
   
   $: items = models.map((model)=> {
     return {
@@ -36,10 +34,9 @@
   })
 
   async function onSubmit() {
-    await addEquipment(name, km, modelIn.value, nserial, notes);
+    await addEquipment(name, km, modelIn?.value, nserial, notes, selected);
     close()
   }
-  const { close } = getContext('simple-modal');
 </script>
 
 <form class="grid grid-cols-1 gap-4 mt-4" on:submit|preventDefault={onSubmit}>
