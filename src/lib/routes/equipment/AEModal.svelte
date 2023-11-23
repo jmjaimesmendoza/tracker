@@ -1,7 +1,7 @@
 <script>
   import { getContext } from "svelte";
   import AddEquipmentForm from "./AddEquipmentForm.svelte";
-  const { open, close } = getContext("simple-modal");
+  const { open } = getContext("simple-modal");
   const showForm = () => open(AddEquipmentForm);
 </script>
 

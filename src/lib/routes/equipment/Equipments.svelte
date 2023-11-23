@@ -1,20 +1,21 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import { createTable, Subscribe, Render } from "svelte-headless-table";
+  import { createTable, Subscribe, Render, createRender } from "svelte-headless-table";
   import { addSortBy } from "svelte-headless-table/plugins";
-  import Modal from 'svelte-simple-modal';
+  import Modal from "svelte-simple-modal";
   import AEModal from "./AEModal.svelte";
   import { equipmentStore } from "../../stores/equipmentStore";
-	import { logStore } from "../../stores/logStore";
-	import { get, writable } from "svelte/store";
   import _ from "lodash";
-	import { addDays, differenceInDays, format } from "date-fns";
-  let revisions: {id: number, equipment_id: number, tipo: string, target: string}[] = [];
-  const parsedEquipment = writable([]);
+
   const table = createTable(equipmentStore, {
     sort: addSortBy({ disableMultisort: true }),
   });
+  import { convertFileSrc } from "@tauri-apps/api/tauri";
+  import Image from "../../components/Image.svelte";
   const columns = table.createColumns([
+    table.column({
+      header: "Imagen",
+      accessor: "file_path",
+    }),
     table.column({
       header: "Nombre",
       accessor: "name",
@@ -39,7 +40,10 @@
   ]);
   const { headerRows, rows, tableAttrs, tableBodyAttrs } =
     table.createViewModel(columns);
-                                                                                               
+
+  const returnImage =(source: string) => createRender(Image, {
+    source: convertFileSrc(source),
+  });
 </script>
 
 <div>
@@ -86,7 +90,11 @@
             {#each row.cells as cell (cell.id)}
               <Subscribe attrs={cell.attrs()} let:attrs>
                 <td {...attrs} class="px-6 py-4 whitespace-nowrap">
-                  <Render of={cell.render()} />
+                  {#if cell.id === "file_path"}
+                      <Render of={returnImage(cell.value)} />
+                  {:else}
+                    <Render of={cell.render()} />
+                  {/if}
                 </td>
               </Subscribe>
             {/each}

@@ -4,18 +4,17 @@ import type { Equipment } from "../types/entities";
 import { logStore } from "./logStore";
 import { addDays, differenceInDays, format } from "date-fns";
 import _ from "lodash";
-import { toast, Toaster, useToasterStore } from "svelte-french-toast"
+import { toast } from "svelte-french-toast"
 
 export const equipmentStore: Writable<Array<Equipment>> = writable([]);
 
-export const addEquipment = async ( name: string, km: number, model_id: number, nserial: string, notes: string, path: any) => {
-  const res = await invoke("add_equipment", { name, km, model_id, nserial, notes, path });
+export const addEquipment = async ( name: string, km: number, model_id: number, nserial: string, notes: string, file_path: any) => {
+  const res = await invoke("add_equipment", { name, km, modelId: model_id, nserial, notes, filePath: file_path });
   await setEquipments();
 }
 
 export const setEquipments = async () => {
   const equipments: Equipment[] = JSON.parse(await invoke("get_equipments"));
-  // equipmentStore.set(equipments);
   const revisions: any[] = JSON.parse(await invoke("get_revisions"));
   let parsedEquipments = equipments.map((e) => {
     const revision = revisions.findLast((r) => r.equipment_id === e.id);
@@ -43,8 +42,6 @@ export const setEquipments = async () => {
     })
 
     avgs = avgs.filter((value) => value != undefined);
-    
-    // avgs.pop()
 
     if (avgs.length <= 1) {
       return {...e, lastRevision: format(new Date(lastLog.created_at.replace(/-/g, '/')), "dd/MM/yyy"),expectedRevisionDate: `${revision.target} Km/Horas`}

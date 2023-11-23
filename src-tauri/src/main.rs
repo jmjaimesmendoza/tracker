@@ -27,9 +27,9 @@ use tracker::update_log_created_at_by_id;
 //tauri command to call create equipment with params from the frontend
 //EQUIPMENT
 #[tauri::command]
-fn add_equipment(name: String, km: i32, model_id: i32, nserial: String, notes: String, path: String ) -> Equipment {
+fn add_equipment(name: String, km: i32, model_id: i32, nserial: String, notes: String, file_path: String ) -> Equipment {
     let connection = &mut establish_connection();
-    return create_equipment(connection, &name, &km, &model_id, &nserial, &notes, &path);
+    return create_equipment(connection, &name, &km, &model_id, &nserial, &notes, &file_path);
 }
 
 #[tauri::command]

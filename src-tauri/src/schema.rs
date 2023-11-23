@@ -15,6 +15,7 @@ diesel::table! {
         model_id -> Integer,
         nserial -> Text,
         notes -> Text,
+        file_path -> Text,
     }
 }
 

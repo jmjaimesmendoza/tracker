@@ -1,6 +1,7 @@
 <script lang="ts">
     import { invoke } from "@tauri-apps/api"
     import { addEquipment, setEquipments } from "../../stores/equipmentStore";
+    const { close } = getContext('simple-modal');
     import { getContext, onMount } from "svelte";
     import Select from "svelte-select";
     let name = "";
@@ -9,7 +10,6 @@
       await invoke("add_brand",{name});
       close()
     }
-    const { close } = getContext('simple-modal');
   </script>
   
   <form class="grid grid-cols-1 gap-4 mt-4" on:submit|preventDefault={onSubmit}>

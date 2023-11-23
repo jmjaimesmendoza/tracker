@@ -11,7 +11,7 @@ pub struct Equipment {
     pub model_id: i32,
     pub nserial: String,
     pub notes: String,
-    pub path: String
+    pub file_path: String,
 }
 
 #[derive(Queryable, Selectable, Serialize)]
@@ -88,7 +88,7 @@ pub struct NewEquipment<'a> {
     pub model_id: &'a i32,
     pub nserial: &'a str,
     pub notes: &'a str,
-    pub path: &'a str,
+    pub file_path: &'a str,
 }
 #[derive(Insertable)]
 #[diesel(table_name = logs)]

@@ -12,13 +12,22 @@
   },
   "tauri": {
     "allowlist": {
-      "all": false,
+      "all": true,
+      "fs": {
+        "all": true,
+        "scope": ["**"]
+      },
       "shell": {
         "all": false,
         "open": true
       },
       "dialog": {
         "all": true
+      },
+      "protocol": {
+        "all": true,
+        "asset": true,
+        "assetScope": ["**"]
       }
     },
     "bundle": {
@@ -34,7 +43,7 @@
       ]
     },
     "security": {
-      "csp": null
+      "csp": "default-src 'self'; img-src 'self' asset: https://asset.localhost" 
     },
     "windows": [
       {
