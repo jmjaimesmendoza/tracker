@@ -1,21 +1,28 @@
 <script lang="ts">
+  import "iconify-icon";
   import { onMount } from "svelte";
-  import { createTable, Subscribe, Render, createRender } from "svelte-headless-table";
+  import {
+    createTable,
+    Subscribe,
+    Render,
+    createRender,
+  } from "svelte-headless-table";
   import { addSortBy, addColumnFilters } from "svelte-headless-table/plugins";
-  import type { ColumnFilterFn } from 'svelte-headless-table/plugins';
-  import Modal from 'svelte-simple-modal';
+  import type { ColumnFilterFn } from "svelte-headless-table/plugins";
+  import Modal, { bind } from "svelte-simple-modal";
   import AMModal from "./AMModal.svelte";
   import ABModal from "./ABModal.svelte";
-  import { equipmentStore } from "../../stores/equipmentStore";
-	import { get, writable } from "svelte/store";
-  import _ from "lodash";
-  import { invoke } from "@tauri-apps/api";
   import SelectFilter from "../../components/SelectFilter.svelte";
-  const modelStore = writable([]);
-  
-  const table = createTable(modelStore, {
+  import { getModels, parsedModelStore } from "../../stores/modelStore";
+  import type { ParsedModel } from "../../types/entities";
+  import { writable } from "svelte/store";
+  import AddModelForm from "./AddModelForm.svelte";
+
+  const modelModal = writable([]);
+
+  const table = createTable(parsedModelStore, {
     sort: addSortBy({ disableMultisort: true }),
-    filter: addColumnFilters()
+    filter: addColumnFilters(),
   });
 
   const matchFilter: ColumnFilterFn = ({ filterValue, value }) => {
@@ -23,24 +30,8 @@
     return filterValue === value;
   };
 
-  const parseModels = (models, brands) => {
-    return models.map((model) => {
-      const brand = brands.find((brand) => brand.id === model.brand_id);
-      return {
-        id: model.id,
-        name: model.name,
-        brand: brand.name,
-      };
-    });
-  };
   onMount(async () => {
-    const res = await invoke("get_models");
-    const brandRequest = await invoke("get_brands");
-    const models = JSON.parse(res);
-    const brands = JSON.parse(brandRequest);
-    const parsedModels = parseModels(models, brands); 
-    
-    modelStore.set(parsedModels);
+    await getModels();
   });
 
   const columns = table.createColumns([
@@ -65,16 +56,25 @@
           render: ({ filterValue, preFilteredValues }) =>
             createRender(SelectFilter, { filterValue, preFilteredValues }),
         },
-      }
-    })
+      },
+    }),
   ]);
   const { headerRows, rows, tableAttrs, tableBodyAttrs, pluginStates } =
     table.createViewModel(columns);
-                                                                                               
+
+  const openEditModal = (model: ParsedModel) => {
+    modelModal.set(
+      bind(AddModelForm, {
+        id: model.id,
+        name: model.name,
+        brandIn: model.brand,
+      })
+    );
+  };
 </script>
 
 <div>
-  <Modal>
+  <Modal show={$modelModal}>
     <AMModal />
   </Modal>
   <Modal>
@@ -104,10 +104,10 @@
                     ⬆️
                   {/if}
                   {#if props.filter?.render}
-                  <div>
-                    <Render of={props.filter.render} />
-                  </div>
-                {/if}
+                    <div>
+                      <Render of={props.filter.render} />
+                    </div>
+                  {/if}
                 </th>
               </Subscribe>
             {/each}
@@ -129,6 +129,14 @@
                 </td>
               </Subscribe>
             {/each}
+            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+              <button
+                class="text-green-600 hover:text-green-900 bg-green-100 px-2 py-1 rounded-md"
+                on:click={() => openEditModal(row.original)}
+              >
+                <iconify-icon icon="bxs:edit"></iconify-icon>
+              </button>
+            </td>
           </tr>
         </Subscribe>
       {/each}

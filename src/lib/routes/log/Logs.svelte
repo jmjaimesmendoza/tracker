@@ -1,38 +1,37 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { createTable, Subscribe, Render, createRender } from "svelte-headless-table";
+  import {
+    createTable,
+    Subscribe,
+    Render,
+    createRender,
+  } from "svelte-headless-table";
   import { addSortBy, addColumnFilters } from "svelte-headless-table/plugins";
-  import type { ColumnFilterFn } from 'svelte-headless-table/plugins';
-  import Modal from 'svelte-simple-modal';
+  import type { ColumnFilterFn } from "svelte-headless-table/plugins";
+  import Modal, { bind } from "svelte-simple-modal";
+  import EditLogForm from "./EditLogForm.svelte";
   import AddLogModal from "./AddLogModal.svelte";
-  import { logStore } from "../../stores/logStore";
-	import { equipmentStore } from "../../stores/equipmentStore";
-	import { personStore, setPersons } from "../../stores/personStore";
-	import { writable } from "svelte/store";
+  import { parsedLogStore } from "../../stores/logStore";
+  import { writable } from "svelte/store";
   import { format, parse } from "date-fns";
-  import SelectFilter from '../../components/SelectFilter.svelte';
-  import {bind} from "svelte-simple-modal"
-  import EditLogForm from "./EditLogForm.svelte"
+  import SelectFilter from "../../components/SelectFilter.svelte";
 
-  $: personList = $personStore;
-
-  $: equipmentList = $equipmentStore;
-  
-  $: logsList = $logStore;
-  
-  const modal = writable([])
+  const modal = writable([]);
 
   const matchFilter: ColumnFilterFn = ({ filterValue, value }) => {
     if (filterValue === undefined) return true;
     return filterValue === value;
   };
 
-  const showPopupWithProps = (logId, newDate) => {
-		modal.set(bind(EditLogForm, { logId, newDate: format(parse(newDate, "dd/MM/yyyy", new Date()), "yyyy-MM-dd") }));
-	};
+  const showPopupWithProps = (logId: number) => {
+    modal.set(
+      bind(EditLogForm, {
+        id: logId,
+      })
+    );
+  };
 
-  const parsedLogs = writable([]);
-  const table = createTable(parsedLogs, {
+  const table = createTable(parsedLogStore, {
     sort: addSortBy({ disableMultisort: true }),
     filter: addColumnFilters(),
   });
@@ -105,23 +104,9 @@
     table.createViewModel(columns);
   const { filterValues } = pluginStates.filter;
 
-  onMount(async () => {    
-    let raaah = personList && equipmentList && logsList?.map((log) => {
-      const person = personList.find((person) => person.id === log.person_id);
-      const equipment = equipmentList.find((equipment) => equipment.id === log.equipment_id);
-      return { 
-        id: log.id,
-        name: equipment?.name,
-        person: person?.name,
-        km: log.km,
-        job: log.job,
-        description: log.description,
-        date: format(new Date(log.created_at.replace(/-/g, '/')), "dd/MM/yyyy"),
-      }
-    });
-    parsedLogs.set(raaah)
-  });
+  onMount(async () => {});
 </script>
+
 <div>
   <Modal show={$modal}>
     <AddLogModal />
@@ -168,20 +153,26 @@
             {...rowAttrs}
             class={row.id % 2 === 0 ? "bg-gray-100" : "bg-white"}
           >
-          {#each row.cells as cell (cell.id)}
-          <Subscribe attrs={cell.attrs()} let:attrs>
-            <td {...attrs} class="px-6 py-4 whitespace-nowrap">
-              {#if cell.column.accessorKey === "date"}
-                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" on:click={()=>showPopupWithProps(row.original.id,cell.value)}>EDIT</button>
-              {/if}
+            {#each row.cells as cell (cell.id)}
+              <Subscribe attrs={cell.attrs()} let:attrs>
+                <td {...attrs} class="px-6 py-4 whitespace-nowrap">
                   <Render of={cell.render()} />
                 </td>
               </Subscribe>
             {/each}
+            <td
+              class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
+            >
+              <button
+                class="text-green-600 hover:text-green-900 bg-green-100 px-2 py-1 rounded-md"
+                on:click={() => showPopupWithProps(row.original.id)}
+              >
+                <iconify-icon icon="bxs:edit"></iconify-icon>
+              </button>
+            </td>
           </tr>
         </Subscribe>
       {/each}
-      
     </tbody>
   </table>
 </div>

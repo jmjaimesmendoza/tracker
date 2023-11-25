@@ -30,7 +30,7 @@ INSERT INTO brands (name) VALUES ("John Deere"),
 
 CREATE TABLE equipments (
   id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-  name TEXT UNIQUE NOT NULL,
+  name TEXT NOT NULL,
   km INTEGER NOT NULL,
   model_id INTEGER NOT NULL,
   nserial TEXT NOT NULL,

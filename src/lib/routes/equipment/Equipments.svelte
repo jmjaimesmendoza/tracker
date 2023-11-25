@@ -1,16 +1,29 @@
 <script lang="ts">
-  import { createTable, Subscribe, Render, createRender } from "svelte-headless-table";
+  import {
+    createTable,
+    Subscribe,
+    Render,
+    createRender,
+  } from "svelte-headless-table";
   import { addSortBy } from "svelte-headless-table/plugins";
-  import Modal from "svelte-simple-modal";
+  import Modal, { bind } from "svelte-simple-modal";
   import AEModal from "./AEModal.svelte";
-  import { equipmentStore } from "../../stores/equipmentStore";
+  import { equipmentStore, setEquipments } from "../../stores/equipmentStore";
   import _ from "lodash";
 
+  const equipentModal = writable([]);
+
+  onMount(async () => {
+    await setEquipments();
+  });
   const table = createTable(equipmentStore, {
     sort: addSortBy({ disableMultisort: true }),
   });
   import { convertFileSrc } from "@tauri-apps/api/tauri";
   import Image from "../../components/Image.svelte";
+  import { onMount } from "svelte";
+  import AddEquipmentForm from "./AddEquipmentForm.svelte";
+  import { writable } from "svelte/store";
   const columns = table.createColumns([
     table.column({
       header: "Imagen",
@@ -41,13 +54,22 @@
   const { headerRows, rows, tableAttrs, tableBodyAttrs } =
     table.createViewModel(columns);
 
-  const returnImage =(source: string) => createRender(Image, {
-    source: convertFileSrc(source),
-  });
+  const returnImage = (source: string) =>
+    createRender(Image, {
+      source: convertFileSrc(source),
+    });
+
+  const openEditModal = (eq: any) => {
+    equipentModal.set(
+      bind(AddEquipmentForm, {
+        id: eq.id,
+      })
+    );
+  };
 </script>
 
 <div>
-  <Modal>
+  <Modal show={$equipentModal}>
     <AEModal />
   </Modal>
   <table {...$tableAttrs} class="min-w-full divide-y divide-gray-200">
@@ -91,13 +113,23 @@
               <Subscribe attrs={cell.attrs()} let:attrs>
                 <td {...attrs} class="px-6 py-4 whitespace-nowrap">
                   {#if cell.id === "file_path"}
-                      <Render of={returnImage(cell.value)} />
+                    <Render of={returnImage(cell.value)} />
                   {:else}
                     <Render of={cell.render()} />
                   {/if}
                 </td>
               </Subscribe>
             {/each}
+            <td
+              class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
+            >
+              <button
+                class="text-green-600 hover:text-green-900 bg-green-100 px-2 py-1 rounded-md"
+                on:click={() => openEditModal(row.original)}
+              >
+                <iconify-icon icon="bxs:edit"></iconify-icon>
+              </button>
+            </td>
           </tr>
         </Subscribe>
       {/each}

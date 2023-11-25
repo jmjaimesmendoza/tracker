@@ -13,6 +13,8 @@
   "dependencies": {
     "@tauri-apps/api": "^1.4.0",
     "date-fns": "^2.30.0",
+    "date-picker-svelte": "^2.10.0",
+    "iconify-icon": "^1.0.8",
     "lodash": "^4.17.21",
     "svelte-french-toast": "^1.2.0",
     "svelte-routing": "^2.4.0",

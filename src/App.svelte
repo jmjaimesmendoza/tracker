@@ -34,7 +34,7 @@
 <div class="flex">
 	<Sidebar/>
 	<Toaster />
-	<div class="flex-1 z-20 px-2 py-4">
+	<div class="flex-1 z-20 max-h-[99vh] overflow-y-scroll">
 		<Router>
 			<Route path="/" component={Equipments} />
 			<Route path="/logs" component={Logs} />

@@ -1,11 +1,11 @@
 pub mod models;
 pub mod schema;
 
-use crate::models::{NewBrand, NewModel, Brand, Model};
+use crate::models::{Brand, Model, NewBrand, NewModel};
 
 use self::models::{Equipment, NewEquipment};
 use self::models::{Log, NewLog};
-use self::models::{Person, NewPerson};
+use self::models::{NewPerson, Person};
 use diesel::prelude::*;
 use dotenvy::dotenv;
 use models::Revision;
@@ -56,6 +56,22 @@ pub fn create_model(conn: &mut SqliteConnection, name: &String, brand_id: &i32) 
     return model;
 }
 
+pub fn update_model(
+    conn: &mut SqliteConnection,
+    model_id: &i32,
+    new_name: &String,
+    new_brand_id: &i32,
+) -> Model {
+    use self::schema::models::dsl::*;
+
+    let model = diesel::update(models.find(model_id))
+        .set((name.eq(new_name), brand_id.eq(new_brand_id)))
+        .get_result(conn)
+        .expect("Error loading model");
+
+    return model;
+}
+
 pub fn find_all_models(conn: &mut SqliteConnection) -> Vec<Model> {
     use self::schema::models::dsl::*;
     let results = models
@@ -65,10 +81,25 @@ pub fn find_all_models(conn: &mut SqliteConnection) -> Vec<Model> {
     return results;
 }
 //EQUIPMENT
-pub fn create_equipment(conn: &mut SqliteConnection, name: &str, km: &i32,  model_id: &i32, nserial: &str, notes: &str, file_path: &str) -> Equipment {
+pub fn create_equipment(
+    conn: &mut SqliteConnection,
+    name: &str,
+    km: &i32,
+    model_id: &i32,
+    nserial: &str,
+    notes: &str,
+    file_path: &str,
+) -> Equipment {
     use crate::schema::equipments;
 
-    let new_equipment = NewEquipment { name, km, model_id, nserial, notes, file_path };
+    let new_equipment = NewEquipment {
+        name,
+        km,
+        model_id,
+        nserial,
+        notes,
+        file_path,
+    };
 
     let equipment = diesel::insert_into(equipments::table)
         .values(&new_equipment)
@@ -96,22 +127,64 @@ pub fn find_equipment_by_id(conn: &mut SqliteConnection, equipment_id: i32) -> E
         .select(Equipment::as_select())
         .first(conn)
         .expect("Error loading equipment");
-    return equipment
+    return equipment;
 }
-pub fn update_equipment_km_by_id(conn: &mut SqliteConnection, equipment_id: &i32, new_km: &i32) -> Equipment {
+pub fn update_equipment_km_by_id(
+    conn: &mut SqliteConnection,
+    equipment_id: &i32,
+    new_km: &i32,
+) -> Equipment {
     use self::schema::equipments::dsl::*;
 
     let equipment = diesel::update(equipments.find(equipment_id))
         .set(km.eq(new_km))
         .get_result(conn)
         .expect("Error loading equipment");
-    return equipment
+    return equipment;
+}
+pub fn update_equipment(
+    conn: &mut SqliteConnection,
+    equipment_id: &i32,
+    new_name: &str,
+    new_km: &i32,
+    new_model_id: &i32,
+    new_nserial: &str,
+    new_notes: &str,
+    new_file_path: &str,
+) -> Equipment {
+    use self::schema::equipments::dsl::*;
+
+    let equipment = diesel::update(equipments.find(equipment_id))
+        .set((
+            name.eq(new_name),
+            km.eq(new_km),
+            model_id.eq(new_model_id),
+            nserial.eq(new_nserial),
+            notes.eq(new_notes),
+            file_path.eq(new_file_path),
+        ))
+        .get_result(conn)
+        .expect("Error loading equipment");
+    return equipment;
 }
 //LOGS
-pub fn create_log(conn: &mut SqliteConnection, equipment_id: &i32, person_id: &i32, description: &String, km: &i32, job: &String ) -> Log {
+pub fn create_log(
+    conn: &mut SqliteConnection,
+    equipment_id: &i32,
+    person_id: &i32,
+    description: &String,
+    km: &i32,
+    job: &String,
+) -> Log {
     use crate::schema::logs;
 
-    let new_log = NewLog { equipment_id, person_id, description, km, job };
+    let new_log = NewLog {
+        equipment_id,
+        person_id,
+        description,
+        km,
+        job,
+    };
 
     let log = diesel::insert_into(logs::table)
         .values(&new_log)
@@ -121,14 +194,45 @@ pub fn create_log(conn: &mut SqliteConnection, equipment_id: &i32, person_id: &i
 
     return log;
 }
-pub fn update_log_created_at_by_id(conn: &mut SqliteConnection, log_id: &i32, new_created_at: &String) -> Log {
+pub fn update_log(
+    conn: &mut SqliteConnection,
+    log_id: &i32,
+    new_equipment_id: &i32,
+    new_person_id: &i32,
+    new_description: &String,
+    new_km: &i32,
+    new_job: &String,
+    new_created_at: &String,
+) -> Log {
     use self::schema::logs::dsl::*;
 
     let log = diesel::update(logs.find(log_id))
-    .set(created_at.eq(new_created_at))
-    .get_result(conn)
-    .expect("Error loading equipment");
-    
+        .set((
+            equipment_id.eq(new_equipment_id),
+            person_id.eq(new_person_id),
+            description.eq(new_description),
+            km.eq(new_km),
+            job.eq(new_job),
+            created_at.eq(new_created_at),
+        ))
+        .get_result(conn)
+        .expect("Error loading equipment");
+
+    return log;
+}
+
+pub fn update_log_created_at_by_id(
+    conn: &mut SqliteConnection,
+    log_id: &i32,
+    new_created_at: &String,
+) -> Log {
+    use self::schema::logs::dsl::*;
+
+    let log = diesel::update(logs.find(log_id))
+        .set(created_at.eq(new_created_at))
+        .get_result(conn)
+        .expect("Error loading equipment");
+
     return log;
 }
 pub fn find_all_logs(conn: &mut SqliteConnection) -> Vec<Log> {
@@ -173,10 +277,19 @@ pub fn find_all_revisions(conn: &mut SqliteConnection) -> Vec<Revision> {
     return results;
 }
 
-pub fn create_revision(conn: &mut SqliteConnection, equipment_id: &i32, tipo: &String, target: &String) -> Revision {
+pub fn create_revision(
+    conn: &mut SqliteConnection,
+    equipment_id: &i32,
+    tipo: &String,
+    target: &String,
+) -> Revision {
     use crate::schema::revisions;
 
-    let new_revision = models::NewRevision { equipment_id, tipo, target };
+    let new_revision = models::NewRevision {
+        equipment_id,
+        tipo,
+        target,
+    };
 
     let revision = diesel::insert_into(revisions::table)
         .values(&new_revision)

@@ -11,6 +11,12 @@ dependencies:
   date-fns:
     specifier: ^2.30.0
     version: 2.30.0
+  date-picker-svelte:
+    specifier: ^2.10.0
+    version: 2.10.0(svelte@4.2.1)
+  iconify-icon:
+    specifier: ^1.0.8
+    version: 1.0.8
   lodash:
     specifier: ^4.17.21
     version: 4.17.21
@@ -308,6 +314,10 @@ packages:
 
   /@floating-ui/utils@0.1.4:
     resolution: {integrity: sha512-qprfWkn82Iw821mcKofJ5Pk9wgioHicxcQMxx+5zt5GSKoqdWvgG5AxVmpmUUjzTLPVSH5auBrhI93Deayn/DA==}
+    dev: false
+
+  /@iconify/types@2.0.0:
+    resolution: {integrity: sha512-+wluvCrRhXrhyOmRDJ3q8mux9JkKy5SJ/v8ol2tu4FVjyYvtEzkc/3pK15ET6RKg4b4w4BmTk1+gsCUhf21Ykg==}
     dev: false
 
   /@jridgewell/gen-mapping@0.3.3:
@@ -675,6 +685,14 @@ packages:
       '@babel/runtime': 7.22.15
     dev: false
 
+  /date-picker-svelte@2.10.0(svelte@4.2.1):
+    resolution: {integrity: sha512-/Nr+OgQIzJAuXr+MWP4galh1AI3wQaUFQDmC1Xg1ovhJkA8NRkdcyYybau8BneLI1vvUcFY5MaVh1VMAEslsGA==}
+    peerDependencies:
+      svelte: ^3.24.0 || ^4.0.0
+    dependencies:
+      svelte: 4.2.1
+    dev: false
+
   /debug@4.3.4:
     resolution: {integrity: sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==}
     engines: {node: '>=6.0'}
@@ -854,6 +872,12 @@ packages:
     dependencies:
       function-bind: 1.1.1
     dev: true
+
+  /iconify-icon@1.0.8:
+    resolution: {integrity: sha512-jvbUKHXf8EnGGArmhlP2IG8VqQLFFyTvTqb9LVL2TKTh7/eCCD1o2HHE9thpbJJb6B8hzhcFb6rOKhvo7reNKA==}
+    dependencies:
+      '@iconify/types': 2.0.0
+    dev: false
 
   /import-fresh@3.3.0:
     resolution: {integrity: sha512-veYYhQa+D1QBKznvhUHxb8faxlrwUnxseDAbAp457E0wLNio2bOSKnjYDhMj+YiAq61xrMGhQk9iXVk5FzgQMw==}
