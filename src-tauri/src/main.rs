@@ -1,32 +1,32 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use tracker::create_brand;
-use tracker::create_equipment;
-
-use tracker::create_log;
-use tracker::create_model;
-use tracker::create_person;
-use tracker::create_revision;
-use tracker::establish_connection;
-use tracker::find_all_brands;
-use tracker::find_all_equipments;
-use tracker::find_all_logs;
-use tracker::find_all_models;
-use tracker::find_all_persons;
-use tracker::find_all_revisions;
-use tracker::models::Brand;
-use tracker::models::Log;
-use tracker::models::Model;
-use tracker::models::Revision;
-use tracker::models::{Equipment, Person};
-use tracker::schema::brands::id;
-use tracker::schema::logs::created_at;
-use tracker::update_equipment;
-use tracker::update_equipment_km_by_id;
-use tracker::update_log;
-use tracker::update_log_created_at_by_id;
-use tracker::update_model;
+use diesel_migrations::embed_migrations;
+use diesel_migrations::EmbeddedMigrations;
+use diesel_migrations::MigrationHarness;
+use track_tor::create_brand;
+use track_tor::create_equipment;
+use track_tor::create_log;
+use track_tor::create_model;
+use track_tor::create_person;
+use track_tor::create_revision;
+use track_tor::establish_connection;
+use track_tor::find_all_brands;
+use track_tor::find_all_equipments;
+use track_tor::find_all_logs;
+use track_tor::find_all_models;
+use track_tor::find_all_persons;
+use track_tor::find_all_revisions;
+use track_tor::models::Brand;
+use track_tor::models::Log;
+use track_tor::models::Model;
+use track_tor::models::Revision;
+use track_tor::models::{Equipment, Person};
+use track_tor::update_equipment;
+use track_tor::update_equipment_km_by_id;
+use track_tor::update_log;
+use track_tor::update_log_created_at_by_id;
+use track_tor::update_model;
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 //tauri command to call create equipment with params from the frontend
@@ -52,7 +52,14 @@ fn put_equipment(
 ) -> Equipment {
     let connection = &mut establish_connection();
     return update_equipment(
-        connection, &equipment_id, &name, &km, &model_id, &nserial, &notes, &file_path,
+        connection,
+        &equipment_id,
+        &name,
+        &km,
+        &model_id,
+        &nserial,
+        &notes,
+        &file_path,
     );
 }
 
@@ -186,7 +193,10 @@ fn get_models() -> Result<String, String> {
     return Ok(json);
 }
 
+pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!("./migrations");
+
 fn main() {
+    let _ = &mut establish_connection().run_pending_migrations(MIGRATIONS);
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             get_equipments,

@@ -6,7 +6,6 @@
   import { invoke } from "@tauri-apps/api";
   import { setLogs } from "../../stores/logStore";
   const { close } = getContext("simple-modal");
-  export let id: number = -1;
   let selectedEquipment: { value: string; label: string };
   let selectedPerson: { value: string; label: string };
   let description: string = "";

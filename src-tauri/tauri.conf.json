@@ -7,8 +7,8 @@
     "withGlobalTauri": false
   },
   "package": {
-    "productName": "tracker",
-    "version": "0.0.0"
+    "productName": "track_tor",
+    "version": "v0.0.2"
   },
   "tauri": {
     "allowlist": {
@@ -18,7 +18,7 @@
         "scope": ["**"]
       },
       "shell": {
-        "all": false,
+        "all": true,
         "open": true
       },
       "dialog": {
@@ -32,8 +32,13 @@
     },
     "bundle": {
       "active": true,
+      "windows": {
+        "webviewInstallMode": {
+          "type": "embedBootstrapper"
+        }
+      },
       "targets": "all",
-      "identifier": "com.tracker.dev",
+      "identifier": "com.tracktor.dev",
       "icon": [
         "icons/32x32.png",
         "icons/128x128.png",
@@ -49,10 +54,20 @@
       {
         "fullscreen": false,
         "resizable": true,
-        "title": "TrackTor",
+        "title": "track_tor",
         "width": 1240,
         "height": 720
       }
-    ]
+    ],
+    "updater": {
+      "windows":{
+        "installMode": "passive"
+      },
+      "endpoints": [
+        "https://gist.githubusercontent.com/jmjaimesmendoza/939bafa0bf4b74d566e639f15f880704/raw/"
+      ],
+      "dialog": true,
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDg2OEIzMjFFMUEyNkE2RjYKUldUMnBpWWFIaktMaGxJODNSdlp1akdPZDBCcXJTL2habjkzb1Q5T2taNGNaREkyU2J2cmFXYm4K"
+    }
   }
 }
