@@ -32,6 +32,15 @@ diesel::table! {
 }
 
 diesel::table! {
+    manuals (id) {
+        id -> Integer,
+        name -> Text,
+        file_path -> Text,
+        equipment_id -> Integer,
+    }
+}
+
+diesel::table! {
     models (id) {
         id -> Integer,
         brand_id -> Integer,
@@ -66,6 +75,7 @@ diesel::table! {
 diesel::joinable!(equipments -> models (model_id));
 diesel::joinable!(logs -> equipments (equipment_id));
 diesel::joinable!(logs -> persons (person_id));
+diesel::joinable!(manuals -> equipments (equipment_id));
 diesel::joinable!(models -> brands (brand_id));
 diesel::joinable!(revisions -> equipments (equipment_id));
 
@@ -73,6 +83,7 @@ diesel::allow_tables_to_appear_in_same_query!(
     brands,
     equipments,
     logs,
+    manuals,
     models,
     persons,
     revisions,

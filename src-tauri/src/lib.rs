@@ -6,6 +6,7 @@ use crate::models::{Brand, Model, NewBrand, NewModel};
 use self::models::{Equipment, NewEquipment};
 use self::models::{Log, NewLog};
 use self::models::{NewPerson, Person};
+use self::models::{NewManual, Manual};
 use diesel::prelude::*;
 use models::Revision;
 
@@ -38,6 +39,30 @@ pub fn find_all_brands(conn: &mut SqliteConnection) -> Vec<Brand> {
         .expect("Error loading brands");
     return results;
 }
+
+pub fn create_manual(conn: &mut SqliteConnection, name: &String, file_path: &String, equipment_id: &i32) -> Manual {
+    use crate::schema::manuals;
+
+    let new_manual = NewManual { name, file_path, equipment_id };
+
+    let manual = diesel::insert_into(manuals::table)
+        .values(&new_manual)
+        .returning(Manual::as_returning())
+        .get_result(conn)
+        .expect("Error saving new manual");
+
+    return manual;
+}
+
+pub fn find_all_manuals(conn: &mut SqliteConnection) -> Vec<Manual> {
+    use self::schema::manuals::dsl::*;
+    let results = manuals
+        .select(Manual::as_select())
+        .load(conn)
+        .expect("Error loading manuals");
+    return results;
+}
+
 //MODELS
 pub fn create_model(conn: &mut SqliteConnection, name: &String, brand_id: &i32) -> Model {
     use crate::schema::models;

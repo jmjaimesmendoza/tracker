@@ -8,7 +8,7 @@
   },
   "package": {
     "productName": "track_tor",
-    "version": "v0.0.2"
+    "version": "0.0.2"
   },
   "tauri": {
     "allowlist": {
@@ -48,7 +48,7 @@
       ]
     },
     "security": {
-      "csp": "default-src 'self'; img-src 'self' asset: https://asset.localhost" 
+      "csp": "default-src 'self' style-src 'self' 'unsafe-inline'; img-src 'self'  asset: https://asset.localhost" 
     },
     "windows": [
       {
@@ -60,9 +60,6 @@
       }
     ],
     "updater": {
-      "windows":{
-        "installMode": "passive"
-      },
       "endpoints": [
         "https://gist.githubusercontent.com/jmjaimesmendoza/939bafa0bf4b74d566e639f15f880704/raw/"
       ],

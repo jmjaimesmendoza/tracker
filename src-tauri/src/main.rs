@@ -11,7 +11,9 @@ use track_tor::create_model;
 use track_tor::create_person;
 use track_tor::create_revision;
 use track_tor::establish_connection;
+use track_tor::create_manual;
 use track_tor::find_all_brands;
+use track_tor::find_all_manuals;
 use track_tor::find_all_equipments;
 use track_tor::find_all_logs;
 use track_tor::find_all_models;
@@ -21,6 +23,7 @@ use track_tor::models::Brand;
 use track_tor::models::Log;
 use track_tor::models::Model;
 use track_tor::models::Revision;
+use track_tor::models::Manual;
 use track_tor::models::{Equipment, Person};
 use track_tor::update_equipment;
 use track_tor::update_equipment_km_by_id;
@@ -180,6 +183,12 @@ fn add_model(name: String, brand_id: i32) -> Model {
 }
 
 #[tauri::command]
+fn add_manual(name:String, equipment_id: i32, file_path: String) -> Manual {
+    let connection = &mut establish_connection();
+    return create_manual(connection, &name, &file_path, &equipment_id);
+}
+
+#[tauri::command]
 fn put_model(model_id: i32, new_name: String, new_brand_id: i32) -> Model {
     let connection = &mut establish_connection();
     return update_model(connection, &model_id, &new_name, &new_brand_id);
@@ -193,6 +202,14 @@ fn get_models() -> Result<String, String> {
     return Ok(json);
 }
 
+#[tauri::command]
+fn get_manuals() -> Result<String, String> {
+    let connection = &mut establish_connection();
+    let results = find_all_manuals(connection);
+    let json = serde_json::to_string(&results).unwrap();
+    return Ok(json);
+}
+
 pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!("./migrations");
 
 fn main() {
@@ -201,6 +218,7 @@ fn main() {
         .invoke_handler(tauri::generate_handler![
             get_equipments,
             add_equipment,
+            add_manual,
             put_equipment,
             put_model,
             edit_log,
@@ -214,6 +232,7 @@ fn main() {
             add_brand,
             get_brands,
             add_model,
+            get_manuals,
             get_models
         ])
         .run(tauri::generate_context!())

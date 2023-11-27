@@ -11,7 +11,7 @@
     "tauri": "tauri"
   },
   "dependencies": {
-    "@tauri-apps/api": "^1.4.0",
+    "@tauri-apps/api": "^1.5.1",
     "date-fns": "^2.30.0",
     "date-picker-svelte": "^2.10.0",
     "iconify-icon": "^1.0.8",
@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^2.4.2",
-    "@tauri-apps/cli": "^1.4.0",
+    "@tauri-apps/cli": "^1.5.6",
     "@tsconfig/svelte": "^5.0.0",
     "@types/lodash": "^4.14.199",
     "autoprefixer": "^10.4.16",

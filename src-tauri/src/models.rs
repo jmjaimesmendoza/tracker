@@ -15,6 +15,16 @@ pub struct Equipment {
 }
 
 #[derive(Queryable, Selectable, Serialize)]
+#[diesel(table_name = crate::schema::manuals)]
+#[diesel(check_for_backend(diesel::sqlite::Sqlite))]
+pub struct Manual {
+    pub id: i32,
+    pub equipment_id: i32,
+    pub name: String,
+    pub file_path: String,
+}
+
+#[derive(Queryable, Selectable, Serialize)]
 #[diesel(table_name = crate::schema::brands)]
 #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
 pub struct Brand {
@@ -78,6 +88,7 @@ use crate::schema::persons;
 use crate::schema::users;
 use crate::schema::revisions;
 use crate::schema::brands;
+use crate::schema::manuals;
 use crate::schema::models;
 
 #[derive(Insertable)]
@@ -88,6 +99,14 @@ pub struct NewEquipment<'a> {
     pub model_id: &'a i32,
     pub nserial: &'a str,
     pub notes: &'a str,
+    pub file_path: &'a str,
+}
+
+#[derive(Insertable)]
+#[diesel(table_name = manuals)]
+pub struct NewManual<'a> {
+    pub name: &'a str,
+    pub equipment_id: &'a i32,
     pub file_path: &'a str,
 }
 #[derive(Insertable)]

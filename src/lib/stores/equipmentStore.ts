@@ -1,6 +1,6 @@
 import { get, writable, type Writable } from "svelte/store";
 import { invoke } from "@tauri-apps/api";
-import type { Equipment } from "../types/entities";
+import type { Equipment, Manual } from "../types/entities";
 import { logStore } from "./logStore";
 import { addDays, differenceInDays, format } from "date-fns";
 import _ from "lodash";
@@ -16,7 +16,9 @@ export const addEquipment = async ( name: string, km: number, model_id: number, 
 export const setEquipments = async () => {
   const equipments: Equipment[] = JSON.parse(await invoke("get_equipments"));
   const revisions: any[] = JSON.parse(await invoke("get_revisions"));
+  const manuals: Manual[] = JSON.parse(await invoke("get_manuals"));
   let parsedEquipments = equipments.map((e) => {
+    const manualsForEquipment = manuals.filter((m) => m.equipment_id === e.id);
     const revision = revisions.findLast((r) => r.equipment_id === e.id);
     const logs = get(logStore).filter((l) => l.equipment_id === e.id);
     

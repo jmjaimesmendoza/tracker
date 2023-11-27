@@ -10,6 +10,13 @@ export type Equipment = {
   eskeler: Date | null;
 };
 
+export type Manual = {
+  id: number;
+  name: string;
+  equipment_id: number;
+  file_path: string;
+};
+
 export type Person = {
   id: number;
   name: string;

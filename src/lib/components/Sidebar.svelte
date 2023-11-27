@@ -10,10 +10,10 @@
   <nav class="mt-4">
     <ul>
       <li>
-        <a href="/logs" class="block py-2 px-4 hover:bg-green-400 transition duration-200 {$currentPath === '/logs' ? 'bg-green-400' : ''}" use:link>Registros</a>
+        <a href="/" class="block py-2 px-4 hover:bg-green-400 transition duration-200 {$currentPath === '/' ? 'bg-green-400' : ''}" use:link>Registros</a>
       </li>
       <li>
-        <a href="/" class="block py-2 px-4 hover:bg-green-400 transition duration-200 {$currentPath === '/' ? 'bg-green-400' : ''}" use:link>Equipos</a>
+        <a href="/equipos" class="block py-2 px-4 hover:bg-green-400 transition duration-200 {$currentPath === '/equipos' ? 'bg-green-400' : ''}" use:link>Equipos</a>
       </li>
       <li>
         <a href="/personas" class="block py-2 px-4 hover:bg-green-400 transition duration-200 {$currentPath === '/personas' ? 'bg-green-400' : ''}" use:link>Personas</a>
